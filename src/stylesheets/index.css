@@ -36,24 +36,18 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
 }
 button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
+#btn-swap:active {
+  width: 10 px;
+  height: 10 px;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -64,5 +58,136 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* Center and make flags circular */
+.flag-select {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Make ALL flag images perfectly circular and centered */
+.flag-select__btn img,
+.flag-select__option__icon img,
+.flag-select__btn .flag-select__icon,
+.flag-select__option__icon .flag-select__icon {
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: cover !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Center the button content */
+.flag-select__btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Center the dropdown options */
+.flag-select__option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 8px 12px !important;
+}
+
+.flag-select__option__icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 8px !important;
+}
+
+/* Ensure dropdown container is properly sized */
+.flag-select__options {
+  min-width: 150px !important;
+}
+
+/* Remove any default borders and backgrounds */
+.flag-select button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Center the entire flag select component in its container */
+.flag-select__wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Additional centering for the main button area */
+.flag-select__btn:after {
+  display: none !important;
+}
+
+/* Make sure the selected flag is centered */
+.flag-select__btn .flag-select__icon {
+  margin: 0 !important;
+}
+
+/* Hide country names if you want only flags */
+.flag-select__option__label {
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  margin-left: 8px !important;
+}
+
+/* Ensure proper spacing in dropdown */
+.flag-select__option {
+  padding: 6px 10px !important;
+}
+
+/* For light theme compatibility */
+@media (prefers-color-scheme: light) {
+  .flag-select__btn img,
+  .flag-select__option__icon img {
+    filter: grayscale(100%) brightness(0.6) !important;
+  }
+
+  .flag-select__option__label {
+    color: #888 !important;
+  }
+
+  input[type="number"] {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #2d3748 !important;
+  }
+
+  .converter-container {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #btn-swap {
+    width: 44px !important;
+    height: 44px !important;
+    margin: 15px auto !important;
+  }
+
+  #btn-swap:active {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  #btn-swap svg,
+  #btn-swap img {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
