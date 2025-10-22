@@ -1,53 +1,105 @@
 import React, { useState, useEffect } from "react";
 import ReactFlagsSelect from "react-flags-select";
-
+import "../stylesheets/index.css";
 export default function Converter() {
   const [fromCurrency, setFromCurrency] = useState("US");
   const [toCurrency, setToCurrency] = useState("ET");
-  const [amount, setAmount] = useState(1);
-  const [converted, setConverted] = useState(0);
-  const [rate, setRate] = useState(null);
+  const [exchangeRate, setExchangeRate] = useState(null);
+  const [amount, setAmount] = useState("");
+  const [amountInFromCurrency, setAmountInFromCurrency] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Map country codes to currency codes
   const countryToCurrency = {
-    US: "USD",
-    ET: "ETB",
-    GB: "GBP",
-    EU: "EUR",
-    JP: "JPY",
-    CA: "CAD",
-    CN: "CNY",
-    IN: "INR",
-    KE: "KES",
+    US: "USD", // United States
+    ET: "ETB", // Ethiopia
+    GB: "GBP", // United Kingdom
+    EU: "EUR", // European Union
+    JP: "JPY", // Japan
+    CA: "CAD", // Canada
+    CN: "CNY", // China
+    IN: "INR", // India
+    KE: "KES", // Kenya
+    SA: "SAR", // Saudi Arabia
+    AE: "AED", // United Arab Emirates (Dubai)
+    CH: "CHF", // Switzerland
+    SE: "SEK", // Sweden
+    NO: "NOK", // Norway
+    KR: "KRW", // South Korea
+    AU: "AUD", // Australia
+    NG: "NGN", // Nigeria
+    ZA: "ZAR", // South Africa
+    BR: "BRL", // Brazil
+    TR: "TRY", // Turkey
+    SG: "SGD", // Singapore
+    MX: "MXN", // Mexico
+    EG: "EGP", // Egypt
+    PK: "PKR", // Pakistan
+    TH: "THB", // Thailand
+    ID: "IDR", // Indonesia
+    MY: "MYR", // Malaysia
+    PH: "PHP", // Philippines
+    AR: "ARS", // Argentina
+    NZ: "NZD", // New Zealand
   };
 
-  // Fetch the latest exchange rate whenever currency changes
-  useEffect(() => {
-    const base = countryToCurrency[fromCurrency];
-    const target = countryToCurrency[toCurrency];
+  let toAmount = "";
+  let fromAmount = "";
 
-    if (base && target) {
-      fetch(
-        `https://api.exchangerate.host/latest?base=${base}&symbols=${target}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const newRate = data?.rates?.[target];
-          if (newRate) {
-            setRate(newRate);
-            setConverted((amount * newRate).toFixed(2));
-          }
-        })
-        .catch((err) => console.error("Error fetching exchange rate:", err));
+  if (exchangeRate && amount !== "") {
+    if (amountInFromCurrency) {
+      fromAmount = amount;
+      toAmount = (amount * exchangeRate).toFixed(2);
+    } else {
+      toAmount = amount;
+      fromAmount = (amount / exchangeRate).toFixed(2);
     }
+  }
+
+  // Fetch exchange rate from a reliable API
+  useEffect(() => {
+    const fetchRate = async () => {
+      const base = countryToCurrency[fromCurrency];
+      const target = countryToCurrency[toCurrency];
+      if (!base || !target) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch(`https://open.er-api.com/v6/latest/${base}`);
+        if (!res.ok) throw new Error(`API returned ${res.status}`);
+        const data = await res.json();
+
+        if (!data || !data.rates || !data.rates[target]) {
+          console.log("API response:", data);
+          throw new Error("Invalid API response structure");
+        }
+
+        setExchangeRate(data.rates[target]);
+      } catch (err) {
+        console.error("Error fetching exchange rate:", err);
+        setError(
+          "Could not fetch exchange rate. Check your internet or try again later."
+        );
+        setExchangeRate(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRate();
   }, [fromCurrency, toCurrency]);
 
-  // Update the converted value immediately when typing
-  useEffect(() => {
-    if (rate && !isNaN(amount)) {
-      setConverted((amount * rate).toFixed(2));
-    }
-  }, [amount, rate]);
+  const handleFromAmountChange = (e) => {
+    setAmount(e.target.value);
+    setAmountInFromCurrency(true);
+  };
+
+  const handleToAmountChange = (e) => {
+    setAmount(e.target.value);
+    setAmountInFromCurrency(false);
+  };
 
   const handleSwap = () => {
     setFromCurrency(toCurrency);
@@ -75,21 +127,20 @@ export default function Converter() {
             <ReactFlagsSelect
               countries={Object.keys(countryToCurrency)}
               selected={fromCurrency}
-              onSelect={(code) => setFromCurrency(code)}
-              showSelectedLabel={true}
+              onSelect={setFromCurrency}
               customLabels={Object.fromEntries(
                 Object.entries(countryToCurrency).map(([country, currency]) => [
                   country,
                   { primary: currency },
                 ])
               )}
-              className="flag-select"
+              className="flag-select flag-select__option"
             />
             <input
               type="number"
-              min="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Enter amount"
+              value={fromAmount}
+              onChange={handleFromAmountChange}
               className="ml-auto w-32 text-right bg-transparent outline-none font-semibold text-gray-600"
             />
           </div>
@@ -126,33 +177,43 @@ export default function Converter() {
             <ReactFlagsSelect
               countries={Object.keys(countryToCurrency)}
               selected={toCurrency}
-              onSelect={(code) => setToCurrency(code)}
-              showSelectedLabel={true}
+              onSelect={setToCurrency}
               customLabels={Object.fromEntries(
                 Object.entries(countryToCurrency).map(([country, currency]) => [
                   country,
                   { primary: currency },
                 ])
               )}
-              className="flag-select"
+              className="flag-select flag-select__option"
+            />
+            <input
+              type="number"
+              placeholder="Converted amount"
+              value={toAmount}
+              onChange={handleToAmountChange}
+              className="ml-auto w-32 text-right bg-transparent outline-none font-semibold text-gray-600"
             />
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="bg-gray-100 text-center py-6">
-        <p className="text-lg font-semibold text-gray-700">
-          {amount || 0} {countryToCurrency[fromCurrency]} ={" "}
-          <span className="text-indigo-600">
-            {converted || 0} {countryToCurrency[toCurrency]}
-          </span>
-        </p>
-
-        {rate && (
-          <p className="text-sm text-gray-500 mt-1">
-            1 {countryToCurrency[fromCurrency]} = {rate.toFixed(3)}{" "}
+      <div className="bg-gray-100 text-center py-6 min-h-[80px] flex flex-col justify-center items-center">
+        {loading ? (
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-600 text-sm">Fetching latest rates...</p>
+          </div>
+        ) : error ? (
+          <p className="text-red-500 text-sm">{error}</p>
+        ) : exchangeRate ? (
+          <p className="text-sm text-gray-500">
+            1 {countryToCurrency[fromCurrency]} = {exchangeRate.toFixed(3)}{" "}
             {countryToCurrency[toCurrency]}
+          </p>
+        ) : (
+          <p className="text-gray-500 text-sm">
+            Select currencies and enter an amount to start
           </p>
         )}
       </div>

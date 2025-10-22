@@ -81,6 +81,17 @@ button:hover {
   margin: 0 auto !important;
 }
 
+/* Style the dropdown options text */
+.flag-select__option {
+  color: black !important; /* change the text color */
+  background-color: white; /* optional: background color */
+}
+
+/* Optional: change hover color */
+.flag-select__option:hover {
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+}
+
 /* Center the button content */
 .flag-select__btn {
   display: flex !important;
