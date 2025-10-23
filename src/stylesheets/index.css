@@ -13,6 +13,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .root a {
   font-weight: 500;
   color: #646cff;
@@ -83,7 +84,8 @@ button:hover {
 
 /* Style the dropdown options text */
 .flag-select__option {
-  color: black !important; /* change the text color */
+  color: #374151 !important;
+  font-weight: 500; /*change the text color*/
   background-color: white; /* optional: background color */
 }
 
@@ -158,6 +160,43 @@ button:hover {
 /* Ensure proper spacing in dropdown */
 .flag-select__option {
   padding: 6px 10px !important;
+}
+
+.amount-from-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb; /* gray-300 */
+  border-radius: 0.75rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.amount-from-input:focus {
+  border-color: #535bf2;
+  box-shadow: 0 0 0 3px rgba(83, 91, 242, 0.3);
+}
+.amount-from-input:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom scrollbar styling for dropdowns and scrollable elements */
+::-webkit-scrollbar {
+  width: 8px; /* scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* track color */
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6366f1; /* indigo-500 */
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f46e5; /* darker indigo on hover */
 }
 
 /* For light theme compatibility */

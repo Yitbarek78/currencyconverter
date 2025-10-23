@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import "../stylesheets/index.css";
+
 export default function Converter() {
   const [fromCurrency, setFromCurrency] = useState("US");
   const [toCurrency, setToCurrency] = useState("ET");
@@ -11,36 +12,36 @@ export default function Converter() {
   const [error, setError] = useState(null);
 
   const countryToCurrency = {
-    US: "USD", // United States
-    ET: "ETB", // Ethiopia
-    GB: "GBP", // United Kingdom
-    EU: "EUR", // European Union
-    JP: "JPY", // Japan
-    CA: "CAD", // Canada
-    CN: "CNY", // China
-    IN: "INR", // India
-    KE: "KES", // Kenya
-    SA: "SAR", // Saudi Arabia
-    AE: "AED", // United Arab Emirates (Dubai)
-    CH: "CHF", // Switzerland
-    SE: "SEK", // Sweden
-    NO: "NOK", // Norway
-    KR: "KRW", // South Korea
-    AU: "AUD", // Australia
-    NG: "NGN", // Nigeria
-    ZA: "ZAR", // South Africa
-    BR: "BRL", // Brazil
-    TR: "TRY", // Turkey
-    SG: "SGD", // Singapore
-    MX: "MXN", // Mexico
-    EG: "EGP", // Egypt
-    PK: "PKR", // Pakistan
-    TH: "THB", // Thailand
-    ID: "IDR", // Indonesia
-    MY: "MYR", // Malaysia
-    PH: "PHP", // Philippines
-    AR: "ARS", // Argentina
-    NZ: "NZD", // New Zealand
+    US: "USD",
+    ET: "ETB",
+    GB: "GBP",
+    EU: "EUR",
+    JP: "JPY",
+    CA: "CAD",
+    CN: "CNY",
+    IN: "INR",
+    KE: "KES",
+    SA: "SAR",
+    AE: "AED",
+    CH: "CHF",
+    SE: "SEK",
+    NO: "NOK",
+    KR: "KRW",
+    AU: "AUD",
+    NG: "NGN",
+    ZA: "ZAR",
+    BR: "BRL",
+    TR: "TRY",
+    SG: "SGD",
+    MX: "MXN",
+    EG: "EGP",
+    PK: "PKR",
+    TH: "THB",
+    ID: "IDR",
+    MY: "MYR",
+    PH: "PHP",
+    AR: "ARS",
+    NZ: "NZD",
   };
 
   let toAmount = "";
@@ -56,7 +57,6 @@ export default function Converter() {
     }
   }
 
-  // Fetch exchange rate from a reliable API
   useEffect(() => {
     const fetchRate = async () => {
       const base = countryToCurrency[fromCurrency];
@@ -141,7 +141,7 @@ export default function Converter() {
               placeholder="Enter amount"
               value={fromAmount}
               onChange={handleFromAmountChange}
-              className="ml-auto w-32 text-right bg-transparent outline-none font-semibold text-gray-600"
+              className="amount-from-input ml-auto w-32 text-right bg-transparent outline-none font-semibold text-gray-600"
             />
           </div>
         </div>
@@ -206,9 +206,9 @@ export default function Converter() {
           </div>
         ) : error ? (
           <p className="text-red-500 text-sm">{error}</p>
-        ) : exchangeRate ? (
-          <p className="text-sm text-gray-500">
-            1 {countryToCurrency[fromCurrency]} = {exchangeRate.toFixed(3)}{" "}
+        ) : exchangeRate && amount !== "" ? (
+          <p className="text-lg font-semibold text-gray-700">
+            {fromAmount} {countryToCurrency[fromCurrency]} = {toAmount}{" "}
             {countryToCurrency[toCurrency]}
           </p>
         ) : (
